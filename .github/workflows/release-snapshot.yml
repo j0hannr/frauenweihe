@@ -1,0 +1,68 @@
+name: Release Snapshot 
+
+# Controls when the action will run. 
+on: 
+    release:
+        types: [created]
+
+jobs:
+  
+  screenshot:
+    
+    name: Screenshot
+    
+    strategy:
+      matrix:
+        page: ['',vorwort, blog, impressum]
+        width: [420, 1200]
+    runs-on: macos-latest
+    
+    steps:
+
+    - name: Screenshot
+      uses: swinton/screenshot-website@v1.x
+      with:
+        source: https://frauenweihe.de/${{ matrix.page }}
+        destination: frauenweihe.de-${{ matrix.page }}-${{ matrix.width }}.jpeg
+        type: 'jpeg'
+        scaleFactor: 1
+        full-page: true
+        width: ${{ matrix.width }}
+        path: ./ 
+
+  bundle:
+    name: bundle
+    needs: screenshot
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+  
+    - uses: actions/download-artifact@v2
+      with:
+        path: snapshots
+        
+    - name: Display structure of downloaded files
+      run: |
+        ls -R
+        mv snapshots/*/*.jpeg snapshots/
+        rm -r snapshots/*/
+        mkdir -p snapshots/mobil
+        mkdir -p snapshots/desktop
+        mv snapshots/*-1200.jpeg snapshots/desktop/
+        mv snapshots/*-420.jpeg snapshots/mobil/
+        ls -R
+        tar -cvf snapshots.tar snapshots
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Snapshots
+        path: snapshots.tar
+        
+    - name: Upload asset to release
+      uses: gacts/upload-to-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASESNAPSHOT }}
+      with:
+        file: './snapshots.tar'
+        type: 'application/octet-stream'
