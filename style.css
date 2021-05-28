@@ -6696,4 +6696,8 @@ h2.blog-vorschau {
     
 }
 
+div#menu-frauenweihe ul, div#menu-frauenweihe li, div#menu-frauenweihe a {
+	color: black !important;
+}
+
 
