@@ -6399,7 +6399,7 @@ p, a, li, span, h3, h2, h4, h5, h6, h1 {
     font-variant: normal;
     font-weight: normal;
 /*    line-height: 1px;*/
-    color: black !important;
+    color: black;
 }
 
 
