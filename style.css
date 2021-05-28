@@ -6547,11 +6547,9 @@ li {
     font-size: 16px;
 }
 
-li > a {
-    color: gray !important;
-}
 
-li.current-menu-item > a {
+
+ li.current-menu-item > a {
     color: black !important;
 }
 
